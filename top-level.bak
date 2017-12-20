@@ -31,7 +31,6 @@
        `(and (,(T pred) ,k) ,(T-pattern-guard k p0))]
       [(? symbol? x)
        ''#t]
-      
       [`(quote ,(? datum? d))
        `(equal? ',d ,k)]
       [(? datum? d)
@@ -139,7 +138,7 @@
       [``,quasi (T-qq quasi)]
       [`(string->list ,str)
        (let ([s0 (top-level str)])
-         ;(pretty-print s0)
+         (pretty-print s0)
          (match s0
            [`(string ,(? mychar? cs) ...)
             cs]))]

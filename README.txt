@@ -187,11 +187,18 @@ not :: x -> boolean
 true if arg1 is false
 
 
+RUN TIME ERRORS
+
+I tried to make a divide by zero error be thrown during the prim evaluation but
+it threw a divide by zero for me so I kind of moved on, only to run out of time later
+
+
 BUILT IN DATA TYPES
 
-I made strings that essentially just use a tag. Strings are defined as lists of
-chars, which tag a quoted symbol like so: (char 'c). (mystring? s) and (mychar? c)
-predicates were added to utils.rkt right before datum definitions. examples:
+I made strings that just use a tag. Mystrings are defined as lists of
+chars, which tag a quoted symbol like (char 'c). Nested mystring are not
+permitted. Predicates (mystring? s) and (mychar? c) were added to utils.rkt right
+ before datum definitions. examples:
 > (mychar? '(char 'a))
 #t
 > (mystring? '(string (char 'a)(char 'b)))
@@ -199,6 +206,35 @@ predicates were added to utils.rkt right before datum definitions. examples:
 > (mystring? '(string (string (char 'a))(char 'b)))
 #f
 
-Nested strings are not permitted. Other functions allocated to 'mystring' and 'mychar':
+Functions allocated to 'mystring' and 'mychar':
+
 string-append :: mystring -> mystring
-removes all nested strings so that the result is just one string, a.k.a. a list of chars
+appends all mystrings together. Example:
+> (top-level '(string-append (string (char 'h)(char 'e)) (string (char 'l)
+              (char 'l)(char 'o))(string)(string)))
+'(string (char 'h) (char 'e) (char 'l) (char 'l) (char 'o))
+
+string->list :: mystring -> (List mychar)
+converts a mystring to a list of mychars. Example:
+> (top-level '(string->list(string (char 'h) (char 'e) (char 'l) (char 'l) (char 'o))))
+'((char 'h) (char 'e) (char 'l) (char 'l) (char 'o))
+
+string-ref :: mystring -> int -> mychar
+returns the mychar at arg2's index in arg1. Example:
+> (top-level '(string-ref (string-append (string (char 'h))
+              (string (char 'e)(char 'l)(char 'l))) 2))
+'(char 'l)
+
+substring :: mystring -> int -> int -> mystring
+returns the portion of arg1 from arg2 inclusive to arg3 exclusive. Example:
+> (top-level '(substring (string (char 'h) (char 'e) (char 'l) (char 'l) (char 'o)) 2 4))
+'(string (char 'l) (char 'l))
+
+Unfortunately, these representations of strings and chars that I made are
+unable to be used by other parts of the program because I was unable to transform
+my representations of strings and chars back into the scheme form for strings and chars.
+
+
+BOEHM GARBAGE COLLECTOR
+
+I did not attempt implementation of the boehm garbage collector
